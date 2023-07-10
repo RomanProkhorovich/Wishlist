@@ -2,7 +2,6 @@ package com.example.wishlist.Model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.sql.ast.tree.expression.Collation;
 
 import java.util.*;
 
@@ -30,12 +29,23 @@ public class Wishlist {
     private Set<WishItem> items = new LinkedHashSet<>();
 
 
-    public void add(WishItem item){
+    public void addItem(WishItem item){
         var b= new LinkedHashSet<>(getItems());
         b.add(item);
         setItems(b);
     }
 
+    public void deleteItem(Long id){
+        {
+            var b = new LinkedHashSet<>(getItems());
+            var item=getItems().stream()
+                    .filter(x-> Objects.equals(x.getItems_id(), id))
+                    .findFirst()
+                    .orElse(null);
+            b.remove(item);
+            setItems(b);
+        }
+    }
 
     @Override
     public boolean equals(Object o) {

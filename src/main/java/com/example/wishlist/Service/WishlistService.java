@@ -27,8 +27,9 @@ public class WishlistService {
         return repo.findAll();
     }
 
-    public Wishlist update(){
-        return null;
+    public void deleteById(Long id){
+        repo.deleteById(id);
     }
+
 
 }

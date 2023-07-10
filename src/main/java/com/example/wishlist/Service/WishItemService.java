@@ -22,4 +22,8 @@ public class WishItemService {
     public List<WishItem> findAll(){return repo.findAll();}
 
     public Optional<WishItem> findById(Long id){return repo.findById(id);}
+
+    public void deleteById(Long id){
+        repo.deleteById(id);
+    }
 }

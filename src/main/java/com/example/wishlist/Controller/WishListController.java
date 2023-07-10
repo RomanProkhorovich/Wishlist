@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/wishlists")
+@RequestMapping("/api/wishlists")
 public class WishListController {
     private final WishlistRepository repo;
 
@@ -24,18 +24,32 @@ public class WishListController {
 
     @PutMapping("/{listId}")
     public ResponseEntity<Wishlist> addItem(@PathVariable Long listId,@RequestBody WishItem item){
-        var listOptional=repo.findById(listId);
-        if (listOptional.isEmpty())
-            throw new WishlistDoesntExist(String.valueOf(listId));
-        var list=listOptional.get();
-        list.add(item);
+        Wishlist list = getWishlist(listId);
+        list.addItem(item);
         return ResponseEntity.ok(repo.save(list));
     }
 
+
+
     @PostMapping
-    public ResponseEntity<Wishlist> addWishlist(@RequestBody Wishlist list){
+    public ResponseEntity<Wishlist> createWishlist(@RequestBody Wishlist list){
         if(list.getWishlist_id()==null || repo.findById(list.getWishlist_id()).isEmpty())
             throw new WishItemAlreadyExist(list.getWishlist_id());
         return  ResponseEntity.ok(repo.save(list));
+    }
+
+    @DeleteMapping("/{listId}/{itemId}")
+    public void deleteItem(@PathVariable Long listId,@PathVariable Long itemId){
+        var wishlist=getWishlist(listId);
+        wishlist.deleteItem(itemId);
+        repo.save(wishlist);
+    }
+
+
+    private Wishlist getWishlist(Long listId) {
+        var listOptional=repo.findById(listId);
+        if (listOptional.isEmpty())
+            throw new WishlistDoesntExist(String.valueOf(listId));
+        return listOptional.get();
     }
 }
