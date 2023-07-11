@@ -2,8 +2,7 @@ package com.example.wishlist.Model;
 
 import com.example.wishlist.Model.Security.Role;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NonNull;
+import lombok.*;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -12,6 +11,9 @@ import java.util.Set;
 @Entity
 @Getter
 @Table(name="app_user")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +30,10 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE, orphanRemoval = true)
+    private Set<Wishlist> wishlists = new LinkedHashSet<>();
+
 
 
     @Override

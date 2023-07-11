@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -24,5 +25,10 @@ public class ExceptionHandlerController {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<String> getResponseIfBadCredentials(BadCredentialsException ex) {
         return new ResponseEntity<>(ex.getMessage(),new HttpHeaders(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<String> getResponseIfUserNotFound(UsernameNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(),new HttpHeaders(), HttpStatus.NOT_FOUND);
     }
 }

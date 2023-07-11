@@ -1,11 +1,16 @@
 package com.example.wishlist.Config;
 
+import com.example.wishlist.Model.Security.Role;
+import com.example.wishlist.Model.User;
 import com.example.wishlist.Model.WishItem;
 import com.example.wishlist.Model.Wishlist;
+import com.example.wishlist.Repository.RoleRepository;
+import com.example.wishlist.Service.UserService;
 import com.example.wishlist.Service.WishItemService;
 import com.example.wishlist.Service.WishlistService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.Date;
 import java.time.Instant;
@@ -15,10 +20,16 @@ import java.util.Set;
 public class DBConfig {
     private final WishItemService items;
     private final WishlistService wishlistRepository;
+    private final BCryptPasswordEncoder encoder;
+    private final UserService userService;
+    private final RoleRepository roleRepository;
 
-    public DBConfig(WishItemService items, WishlistService wishlistRepository) {
+    public DBConfig(WishItemService items, WishlistService wishlistRepository, BCryptPasswordEncoder encoder, UserService userService, RoleRepository roleRepository) {
         this.items = items;
         this.wishlistRepository = wishlistRepository;
+        this.encoder = encoder;
+        this.userService = userService;
+        this.roleRepository = roleRepository;
     }
 
 
@@ -63,6 +74,17 @@ public class DBConfig {
                 .build();
 
         list=wishlistRepository.save(list);
+
+        Role role=new Role("ROLE_ADMIN");
+        role=roleRepository.save(role);
+
+        userService.save(User.builder()
+                .mail("mymail@test.com")
+                .roles(Set.of(role))
+                .username("Admin")
+                .password(encoder.encode("password"))
+                .build());
+
 
     }
 }

@@ -28,6 +28,10 @@ public class Wishlist {
             inverseJoinColumns = @JoinColumn(name = "items_id"))
     private Set<WishItem> items = new LinkedHashSet<>();
 
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "user_id")
+    private User user;
+
 
     public void addItem(WishItem item){
         var b= new LinkedHashSet<>(getItems());
